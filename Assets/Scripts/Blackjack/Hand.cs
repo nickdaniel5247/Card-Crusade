@@ -1,0 +1,39 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
+using UnityEngine;
+
+public class Hand : MonoBehaviour
+{
+    public bool canSplit = false;
+    public List<int> cards = new List<int>();
+    public List<GameObject> cardObjects = new List<GameObject>();
+
+    private void spawnCard(Sprite card)
+    {
+        var gameObject = new GameObject("Card");
+        gameObject.transform.SetParent(this.transform);
+        gameObject.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        gameObject.transform.position = cardObjects.Last().transform.position + new Vector3(0.25f, 0.25f, 0f);
+
+        var spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+        spriteRenderer.sprite = card;
+        spriteRenderer.sortingLayerName = "Cards";
+    }
+
+    void hit()
+    {
+        
+    }
+
+    void split()
+    {
+
+    }
+
+    void doubleDown()
+    {
+
+    }
+}
