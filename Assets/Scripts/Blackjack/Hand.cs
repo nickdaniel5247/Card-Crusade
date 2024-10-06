@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class Hand : MonoBehaviour
 {
-    public bool canSplit = false;
     public List<int> cards = new List<int>();
     public List<GameObject> cardObjects = new List<GameObject>();
 
@@ -18,9 +17,24 @@ public class Hand : MonoBehaviour
 
         if (!deck)
         {
-            Debug.LogError("Cannot find Deck GameObject w/ Deck script.");
+            Debug.LogError("HAND: Cannot find Deck GameObject w/ Deck script.");
             return;
         }
+
+        Card card = deck.takeCard();
+        cards.Add(card.value);
+
+        var gameObject = new GameObject("Card");
+        gameObject.transform.SetParent(this.transform);
+        gameObject.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        gameObject.transform.localPosition = new Vector3(-0.25f, 0f, 0f);
+
+        var spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+        spriteRenderer.sprite = card.card;
+        spriteRenderer.sortingLayerName = "Cards";
+        spriteRenderer.sortingOrder = cardObjects.Count;
+
+        cardObjects.Add(gameObject);
     }
 
     //Draw card with given sprite and correct transformations
@@ -29,7 +43,7 @@ public class Hand : MonoBehaviour
         var gameObject = new GameObject("Card");
         gameObject.transform.SetParent(this.transform);
         gameObject.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        gameObject.transform.position = cardObjects.Last().transform.position + new Vector3(0.25f, 0.25f, 0f);
+        gameObject.transform.localPosition = cardObjects.Last().transform.position + new Vector3(0.25f, 0.25f, 0f);
 
         if (rotate)
         {

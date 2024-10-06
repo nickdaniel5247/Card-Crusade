@@ -37,7 +37,7 @@ public class Deck : MonoBehaviour
         {
             if (card.card == null) 
             {
-                Debug.LogError("Deck is not populated.");
+                Debug.LogError("DECK: Deck is not populated.");
                 return;
             }
         }
@@ -55,7 +55,7 @@ public class Deck : MonoBehaviour
     {
         if (currentCard >= 52)
         {
-            Debug.LogError("currentCard index too big, deck exhausted.");
+            Debug.LogError("DECK: currentCard index too big, deck exhausted.");
             return null;
         }
 
