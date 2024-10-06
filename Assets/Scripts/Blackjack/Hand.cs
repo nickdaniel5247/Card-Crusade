@@ -10,6 +10,20 @@ public class Hand : MonoBehaviour
     public List<int> cards = new List<int>();
     public List<GameObject> cardObjects = new List<GameObject>();
 
+    private Deck deck;
+
+    void Awake()
+    {
+        deck = GameObject.Find("Deck").GetComponent<Deck>();
+
+        if (!deck)
+        {
+            Debug.LogError("Cannot find Deck GameObject w/ Deck script.");
+            return;
+        }
+    }
+
+    //Draw card with given sprite and correct transformations
     private void spawnCard(Sprite card)
     {
         var gameObject = new GameObject("Card");
@@ -35,5 +49,10 @@ public class Hand : MonoBehaviour
     void doubleDown()
     {
 
+    }
+
+    void Start()
+    {
+        
     }
 }
