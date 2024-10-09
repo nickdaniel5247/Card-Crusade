@@ -6,9 +6,7 @@ using UnityEngine;
 
 public class Hand : MonoBehaviour
 {
-    public List<int> cards = new List<int>();
     public List<GameObject> cardObjects = new List<GameObject>();
-
     private Deck deck;
 
     void Awake()
@@ -22,7 +20,6 @@ public class Hand : MonoBehaviour
         }
 
         Card card = deck.takeCard();
-        cards.Add(card.value);
 
         var gameObject = new GameObject("Card");
         gameObject.transform.SetParent(this.transform);
@@ -34,11 +31,14 @@ public class Hand : MonoBehaviour
         spriteRenderer.sortingLayerName = "Cards";
         spriteRenderer.sortingOrder = cardObjects.Count;
 
+        var cardData = gameObject.AddComponent<CardData>();
+        cardData.value = card.value;
+
         cardObjects.Add(gameObject);
     }
 
     //Draw card with given sprite and correct transformations
-    private void spawnCard(Sprite card, bool rotate = false)
+    private void spawnCard(Card card, bool rotate = false)
     {
         var gameObject = new GameObject("Card");
         gameObject.transform.SetParent(this.transform);
@@ -51,9 +51,12 @@ public class Hand : MonoBehaviour
         }
 
         var spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
-        spriteRenderer.sprite = card;
+        spriteRenderer.sprite = card.card;
         spriteRenderer.sortingLayerName = "Cards";
         spriteRenderer.sortingOrder = cardObjects.Count;
+
+        var cardData = gameObject.AddComponent<CardData>();
+        cardData.value = card.value;
 
         cardObjects.Add(gameObject);
     }
@@ -61,8 +64,7 @@ public class Hand : MonoBehaviour
     void hit()
     {
         Card card = deck.takeCard();
-        spawnCard(card.card);
-        cards.Add(card.value);
+        spawnCard(card);
     }
 
     void split()
@@ -73,7 +75,6 @@ public class Hand : MonoBehaviour
     void doubleDown()
     {
         Card card = deck.takeCard();
-        spawnCard(card.card, true);
-        cards.Add(card.value);
+        spawnCard(card, true);
     }
 }
