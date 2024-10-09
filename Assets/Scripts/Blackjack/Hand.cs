@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Hand : MonoBehaviour
@@ -18,7 +16,11 @@ public class Hand : MonoBehaviour
             Debug.LogError("HAND: Cannot find Deck GameObject w/ Deck script.");
             return;
         }
+    }
 
+    //Initialize first card in hand by drawing random card
+    public void init()
+    {
         Card card = deck.takeCard();
 
         var gameObject = new GameObject("Card");
@@ -37,13 +39,22 @@ public class Hand : MonoBehaviour
         cardObjects.Add(gameObject);
     }
 
-    //Draw card with given sprite and correct transformations
+    //Initialize first card in hand using supplied card GameObject
+    public void init(GameObject card)
+    {
+        card.transform.SetParent(this.transform);
+        card.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        card.transform.localPosition = new Vector3(-0.25f, 0f, 0f);
+        cardObjects.Add(card);
+    }
+
+    //Draw card with correct transformations
     private void spawnCard(Card card, bool rotate = false)
     {
         var gameObject = new GameObject("Card");
         gameObject.transform.SetParent(this.transform);
         gameObject.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        gameObject.transform.localPosition = cardObjects.Last().transform.position + new Vector3(0.25f, 0.25f, 0f);
+        gameObject.transform.localPosition = cardObjects.Last().transform.localPosition + new Vector3(0.25f, 0.25f, 0f);
 
         if (rotate)
         {
@@ -61,18 +72,28 @@ public class Hand : MonoBehaviour
         cardObjects.Add(gameObject);
     }
 
-    void hit()
+    public void hit()
     {
         Card card = deck.takeCard();
         spawnCard(card);
     }
 
-    void split()
+    //Splits hand by surrendering ownership of second card to caller
+    public GameObject split()
     {
-        Debug.LogError("Split not implemented yet.");
+        if (cardObjects.Count != 2)
+        {
+            Debug.Log("HAND: cardObjects' count doesn't equal 0.");
+            return null;
+        }
+
+        GameObject card = cardObjects.Last();
+        cardObjects.RemoveAt(cardObjects.Count - 1);
+
+        return card;
     }
 
-    void doubleDown()
+    public void doubleDown()
     {
         Card card = deck.takeCard();
         spawnCard(card, true);
