@@ -4,48 +4,64 @@ using UnityEngine;
 
 public class Blackjack_Controller : MonoBehaviour
 {
-    //Editor chosen list of players, for now
+    //Editor chosen list of participants, for now
     public List<GameObject> players = new List<GameObject>();
+    public GameObject dealer;
+
     public bool continueGame = true;
 
     private void dealCards()
     {
+        Blackjack_Dealer blackjack_Dealer = dealer.GetComponent<Blackjack_Dealer>();
+
         for (int i = 0; i < players.Count; ++i)
         {
             players[i].GetComponent<Blackjack_Player>().dealFirstCard();
         }
 
+        blackjack_Dealer.dealFirstCard();
+
         for (int i = 0; i < players.Count; ++i)
         {
             players[i].GetComponent<Blackjack_Player>().dealSecondCard();
         }
+
+        blackjack_Dealer.dealSecondCard();
+    }
+
+    private IEnumerator playTurns()
+    {
+        List<List<int>> playerHandValues = new List<List<int>>();
+
+        for (int i = 0; i < players.Count; ++i)
+        {
+            yield return players[i].GetComponent<Blackjack_Player>().playTurn((ret) => { playerHandValues.Add(ret); });
+        }
+
+        //TODO: Add dealer turn here
+    }
+
+    private void endRound()
+    {
+        for (int i = 0; i < players.Count; ++i)
+        {
+            players[i].GetComponent<Blackjack_Player>().destroyHands();
+        }
+
+        dealer.GetComponent<Blackjack_Dealer>().destroyHand();
     }
 
     private IEnumerator gameLoop()
     {
         while (continueGame)
         {
-            List<List<int>> playerHandValues = new List<List<int>>();
-
             dealCards();
 
-            //TODO: Add dealer begin round
-
-            for (int i = 0; i < players.Count; ++i)
-            {
-                yield return players[i].GetComponent<Blackjack_Player>().playTurn((ret) => { playerHandValues.Add(ret); });
-            }
-
-            //TODO: Add dealer turn here
+            yield return playTurns();
 
             //TODO: Evaluate hands against dealer
 
-            for (int i = 0; i < players.Count; ++i)
-            {
-                players[i].GetComponent<Blackjack_Player>().destroyHands();
-            }
-
-            //TODO: Add dealer end round
+            endRound();
         }
     }
 
