@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -45,7 +46,7 @@ public class Player : MonoBehaviour
         hands.Insert(idx, gameObject); //Not O(N) only O(4), can't split more than 4 times
     }
 
-    //Split hand at provided index
+    //Split hand at provided index, no sanity checking performed
     private void splitHand(int idx)
     {
         //Take second card ownership from previous hand
@@ -73,8 +74,58 @@ public class Player : MonoBehaviour
         createHand(idx + 1, card, (idx + 1) * handDist - furthestHandDist);
     }
 
-    public IEnumerator playTurn()
+    //Deals first card by creating inital hand; no-op if first card has been dealt already
+    public void dealFirstCard()
     {
+        if (hands.Count != 0)
+        {
+            return;
+        }
+
+        createHand();
+    }
+
+    //Deals second card; expects starting conditions created from calling dealFirstCard otherwise it's no-op
+    public void dealSecondCard()
+    {
+        if (hands.Count != 1)
+        {
+            return;
+        }
+
+        Hand hand = hands.First().GetComponent<Hand>();
+
+        if (hand.cardObjects.Count != 1)
+        {
+            return;
+        }
+
+        hand.hit();
+    }
+
+    //Destroys all hands
+    public void destroyHands()
+    {
+        for (int i = 0; i < hands.Count; ++i)
+        {
+            Destroy(hands[i]);
+        }
+
+        hands.Clear();
+    }
+
+    /*
+     * Play hand using playerChoice values; will wait for changes to playerChoice to continue
+     *
+     * playerChoice will be reset to Action.None each time it is processed
+     * Expects caller to continually assign playerChoice until this function ends
+     *
+     * Returns final hand values through the retCallback paramter
+     */
+    public IEnumerator playTurn(System.Action<List<int>> retCallback)
+    {
+        List<int> handValues = new List<int>();
+
         for (int i = hands.Count - 1; i >= 0; --i)
         {
             Hand hand = hands[i].GetComponent<Hand>();
@@ -105,6 +156,10 @@ public class Player : MonoBehaviour
 
                 playerChoice = Action.None;
             }
+
+            handValues.Add(hand.getHandValue());
         }
+
+        retCallback(handValues);
     }
 }
