@@ -10,6 +10,12 @@ public class Blackjack_Hand : Hand
         //Initialize first card in hand using supplied card GameObject
         if (handInitParams.Count() == 1)
         {
+            if (handInitParams[0] is not GameObject)
+            {
+                Debug.LogError("BLACKJACK_HAND: Type different from GameObject was provided to init.");
+                return;
+            }
+
             GameObject givenCard = (GameObject)handInitParams[0];
 
             givenCard.transform.SetParent(this.transform);
