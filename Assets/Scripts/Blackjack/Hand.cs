@@ -98,4 +98,34 @@ public class Hand : MonoBehaviour
         Card card = deck.takeCard();
         spawnCard(card, true);
     }
+
+    public int getHandValue()
+    {
+        int value = 0;
+        bool seenAce = false;
+
+        foreach (GameObject card in cardObjects)
+        {
+            int cardVal = card.GetComponent<CardData>().value;
+
+            //If we haven't seen an ace and now encounter one, use it as value 11
+            if (!seenAce && cardVal == 1)
+            {
+                cardVal = 11;
+
+                //seenAce is used since only ace can be 11
+                seenAce = true;
+            }
+
+            value += cardVal;
+        }
+
+        //If we are above 21, we can try to lower by changing ace back to 1
+        if (seenAce && value > 21)
+        {
+            value -= 10;
+        }
+
+        return value;
+    }
 }

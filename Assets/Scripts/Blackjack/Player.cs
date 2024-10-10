@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,17 @@ public class Player : MonoBehaviour
     private List<GameObject> hands = new List<GameObject>();
     public float handVerticalOffset = 2f;
     public float handDist = 1f;
+
+    public enum Action
+    {
+        None,
+        Hit,
+        Stand,
+        Double,
+        Split
+    };
+
+    public Action playerChoice = Action.None;
 
     /*
      *  Creates hand at specified idx in the hands array and at a specified xPos
@@ -34,14 +46,8 @@ public class Player : MonoBehaviour
     }
 
     //Split hand at provided index
-    void splitHand(int idx)
+    private void splitHand(int idx)
     {
-        if (idx < 0 || idx >= hands.Count)
-        {
-            Debug.LogError("PLAYER: Bad index for split.");
-            return;
-        }
-
         //Take second card ownership from previous hand
         GameObject card = hands[idx].GetComponent<Hand>().split();
 
@@ -65,5 +71,40 @@ public class Player : MonoBehaviour
         }
 
         createHand(idx + 1, card, (idx + 1) * handDist - furthestHandDist);
+    }
+
+    public IEnumerator playTurn()
+    {
+        for (int i = hands.Count - 1; i >= 0; --i)
+        {
+            Hand hand = hands[i].GetComponent<Hand>();
+            bool endHandTurn = false;
+
+            while (!endHandTurn && hand.getHandValue() < 21)
+            {
+                yield return new WaitUntil(() => playerChoice != Action.None);
+
+                switch (playerChoice)
+                {
+                case Action.Hit:
+                    hand.hit();
+                    break;
+                case Action.Stand:
+                    endHandTurn = true;
+                    break;
+                case Action.Double:
+                    hand.doubleDown();
+                    endHandTurn = true;
+                    break;
+                case Action.Split:
+                    splitHand(i);
+                    ++i; //New hand becomes one to the right
+                    hand = hands[i].GetComponent<Hand>(); //Switch to new hand now
+                    break;
+                }
+
+                playerChoice = Action.None;
+            }
+        }
     }
 }
