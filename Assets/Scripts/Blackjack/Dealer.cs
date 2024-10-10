@@ -56,6 +56,18 @@ public class Blackjack_Dealer : Participant
         hand.hit();
     }
 
+    public void revealFirstCard()
+    {
+        List<GameObject> cardObjects = hands.First().GetComponent<Blackjack_Hand>().cardObjects;
+
+        if (hands.Count < 1 || cardObjects.Count < 1)
+        {
+            return;
+        }
+
+        cardObjects.First().GetComponent<SpriteRenderer>().sprite = firstCard;
+    }
+
     //Destroys hand
     public void destroyHand()
     {

@@ -38,7 +38,8 @@ public class Blackjack_Controller : MonoBehaviour
             yield return players[i].GetComponent<Blackjack_Player>().playTurn((ret) => { playerHandValues.Add(ret); });
         }
 
-        //TODO: Add dealer turn here
+        dealer.GetComponent<Blackjack_Dealer>().revealFirstCard();
+        //TODO: Finish dealer turn here
     }
 
     private void endRound()
@@ -58,6 +59,7 @@ public class Blackjack_Controller : MonoBehaviour
             dealCards();
 
             yield return playTurns();
+            yield return new WaitForSeconds(2f); //Need to see results
 
             //TODO: Evaluate hands against dealer
 
