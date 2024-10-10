@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Blackjack_Player : Participant
 {
-    private List<GameObject> hands = new List<GameObject>();
-    public float handVerticalOffset = 2f;
     public float handDist = 1f;
 
     public enum Action
@@ -20,37 +18,11 @@ public class Player : MonoBehaviour
 
     public Action playerChoice = Action.None;
 
-    /*
-     *  Creates hand at specified idx in the hands array and at a specified xPos
-     *  
-     *  A card GameObject can be supplied to start with an initial card; otherwise, 
-     *  a random card pulled from the deck becomes the starting card
-     */
-    private void createHand(int idx = 0, GameObject card = null, float xPos = 0f)
-    {
-        var gameObject = new GameObject("Hand");
-        gameObject.transform.SetParent(this.transform);
-        gameObject.transform.localPosition = new Vector3(xPos, handVerticalOffset, 0f);
-
-        var hand = gameObject.AddComponent<Hand>();
-
-        if (card)
-        {
-            hand.init(card);
-        }
-        else
-        {
-            hand.init();
-        }
-
-        hands.Insert(idx, gameObject); //Not O(N) only O(4), can't split more than 4 times
-    }
-
     //Split hand at provided index, no sanity checking performed
     private void splitHand(int idx)
     {
         //Take second card ownership from previous hand
-        GameObject card = hands[idx].GetComponent<Hand>().split();
+        GameObject card = hands[idx].GetComponent<Blackjack_Hand>().split();
 
         /* Calculate new card positions centered around local position (0, handVerticalOffset, 0) */
 
@@ -71,7 +43,7 @@ public class Player : MonoBehaviour
             hands[i].transform.localPosition = new Vector3(xPos, handVerticalOffset, 0f);
         }
 
-        createHand(idx + 1, card, (idx + 1) * handDist - furthestHandDist);
+        createHand(idx + 1, (idx + 1) * handDist - furthestHandDist, card);
     }
 
     //Deals first card by creating inital hand; no-op if first card has been dealt already
@@ -93,7 +65,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        Hand hand = hands.First().GetComponent<Hand>();
+        Blackjack_Hand hand = hands.First().GetComponent<Blackjack_Hand>();
 
         if (hand.cardObjects.Count != 1)
         {
@@ -128,7 +100,7 @@ public class Player : MonoBehaviour
 
         for (int i = hands.Count - 1; i >= 0; --i)
         {
-            Hand hand = hands[i].GetComponent<Hand>();
+            Blackjack_Hand hand = hands[i].GetComponent<Blackjack_Hand>();
             bool endHandTurn = false;
 
             while (!endHandTurn && hand.getHandValue() < 21)
@@ -150,7 +122,7 @@ public class Player : MonoBehaviour
                 case Action.Split:
                     splitHand(i);
                     ++i; //New hand becomes one to the right
-                    hand = hands[i].GetComponent<Hand>(); //Switch to new hand now
+                    hand = hands[i].GetComponent<Blackjack_Hand>(); //Switch to new hand now
                     break;
                 }
 

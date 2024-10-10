@@ -776,7 +776,7 @@ MonoBehaviour:
   - {fileID: 1929882676}
   - {fileID: 640204522}
   - {fileID: 1615616348}
-  activeGame: 1
+  continueGame: 1
 --- !u!1 &1442061950
 GameObject:
   m_ObjectHideFlags: 0
@@ -1241,6 +1241,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2068460583}
     m_Modifications:
+    - target: {fileID: 3887213534037160273, guid: 73a5d4127370546e5a1b88602c679082, type: 3}
+      propertyPath: asf
+      value: 
+      objectReference: {fileID: 11500000, guid: 656c0affedbc64e8c8bacbc3c2f31c3b, type: 3}
+    - target: {fileID: 3887213534037160273, guid: 73a5d4127370546e5a1b88602c679082, type: 3}
+      propertyPath: Hand
+      value: 
+      objectReference: {fileID: 11500000, guid: 656c0affedbc64e8c8bacbc3c2f31c3b, type: 3}
+    - target: {fileID: 3887213534037160273, guid: 73a5d4127370546e5a1b88602c679082, type: 3}
+      propertyPath: script
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6030684865318110272, guid: 73a5d4127370546e5a1b88602c679082, type: 3}
       propertyPath: m_Name
       value: Player

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Controller : MonoBehaviour
+public class Blackjack_Controller : MonoBehaviour
 {
     //Editor chosen list of players, for now
     public List<GameObject> players = new List<GameObject>();
@@ -12,12 +12,12 @@ public class Controller : MonoBehaviour
     {
         for (int i = 0; i < players.Count; ++i)
         {
-            players[i].GetComponent<Player>().dealFirstCard();
+            players[i].GetComponent<Blackjack_Player>().dealFirstCard();
         }
 
         for (int i = 0; i < players.Count; ++i)
         {
-            players[i].GetComponent<Player>().dealSecondCard();
+            players[i].GetComponent<Blackjack_Player>().dealSecondCard();
         }
     }
 
@@ -33,7 +33,7 @@ public class Controller : MonoBehaviour
 
             for (int i = 0; i < players.Count; ++i)
             {
-                yield return players[i].GetComponent<Player>().playTurn((ret) => { playerHandValues.Add(ret); });
+                yield return players[i].GetComponent<Blackjack_Player>().playTurn((ret) => { playerHandValues.Add(ret); });
             }
 
             //TODO: Add dealer turn here
@@ -42,7 +42,7 @@ public class Controller : MonoBehaviour
 
             for (int i = 0; i < players.Count; ++i)
             {
-                players[i].GetComponent<Player>().destroyHands();
+                players[i].GetComponent<Blackjack_Player>().destroyHands();
             }
 
             //TODO: Add dealer end round
