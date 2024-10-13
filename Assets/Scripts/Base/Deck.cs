@@ -15,6 +15,7 @@ public class Deck : MonoBehaviour
     private int currentCard = 0;
     
     // This script expects deck to be populated by the editor
+    [Header("BLACKJACK: ace should have value 1")] 
     public Card[] deck = new Card[deckSize];
 
     void shuffle()

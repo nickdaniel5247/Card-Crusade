@@ -80,13 +80,19 @@ public class Blackjack_Dealer : Participant
     }
 
     /*
-     * Play hand using dealer rules
+     * Play hand using dealer rules (hit while under 17, hit on soft 17 too)
      *
      * Returns final hand value
      */
     public int playTurn()
     {
-        Debug.LogError("BLACKJACK_DEALER: playTurn is not implemented.");
-        return 0;
+        Blackjack_Hand hand = hands.First().GetComponent<Blackjack_Hand>();
+
+        while (hand.getHandValue(false) < 17)
+        {
+            hand.hit();
+        }
+
+        return hand.getHandValue(false);
     }
 }

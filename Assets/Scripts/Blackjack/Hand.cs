@@ -72,29 +72,41 @@ public class Blackjack_Hand : Hand
         spawnCard(card, true);
     }
 
-    public int getHandValue()
+    /*
+     * Gets best hand value permitted by card combination
+     *
+     * If allowSoft17 is set off, soft 17s will be reduced to 7;
+     * otherwise, they will count as 17
+     */
+    public int getHandValue(bool allowSoft17 = true)
     {
         int value = 0;
-        bool seenAce = false;
+        bool highAce = false;
 
         foreach (GameObject card in cardObjects)
         {
             int cardVal = card.GetComponent<CardData>().value;
 
             //If we haven't seen an ace and now encounter one, use it as value 11
-            if (!seenAce && cardVal == 1)
+            if (!highAce && cardVal == 1)
             {
                 cardVal = 11;
 
-                //seenAce is used since only ace can be 11
-                seenAce = true;
+                //highAce is used since only ace can be 11
+                highAce = true;
             }
 
             value += cardVal;
         }
 
+        //If soft 17s aren't allowed, switch ace back to 1
+        if (!allowSoft17 && highAce && value == 17)
+        {
+            value -= 10;
+        }
+
         //If we are above 21, we can try to lower by changing ace back to 1
-        if (seenAce && value > 21)
+        if (highAce && value > 21)
         {
             value -= 10;
         }
