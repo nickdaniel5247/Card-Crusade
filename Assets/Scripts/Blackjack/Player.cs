@@ -67,7 +67,7 @@ public class Blackjack_Player : Participant
 
         Blackjack_Hand hand = hands.First().GetComponent<Blackjack_Hand>();
 
-        if (hand.cardObjects.Count != 1)
+        if (hand.getCardObjects().Count != 1)
         {
             return;
         }

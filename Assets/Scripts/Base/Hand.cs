@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Hand : MonoBehaviour
 {
-    public List<GameObject> cardObjects = new List<GameObject>();
+    protected List<GameObject> cardObjects = new List<GameObject>();
     protected Deck deck;
 
     void Awake()

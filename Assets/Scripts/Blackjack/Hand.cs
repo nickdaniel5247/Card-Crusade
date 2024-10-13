@@ -72,6 +72,11 @@ public class Blackjack_Hand : Hand
         spawnCard(card, true);
     }
 
+    public List<GameObject> getCardObjects()
+    {
+        return cardObjects;
+    }
+    
     /*
      * Gets best hand value permitted by card combination
      *

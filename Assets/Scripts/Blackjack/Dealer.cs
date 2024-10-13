@@ -48,7 +48,7 @@ public class Blackjack_Dealer : Participant
 
         Blackjack_Hand hand = hands.First().GetComponent<Blackjack_Hand>();
 
-        if (hand.cardObjects.Count != 1)
+        if (hand.getCardObjects().Count != 1)
         {
             return;
         }
@@ -58,7 +58,7 @@ public class Blackjack_Dealer : Participant
 
     public void revealFirstCard()
     {
-        List<GameObject> cardObjects = hands.First().GetComponent<Blackjack_Hand>().cardObjects;
+        List<GameObject> cardObjects = hands.First().GetComponent<Blackjack_Hand>().getCardObjects();
 
         if (hands.Count < 1 || cardObjects.Count < 1)
         {
