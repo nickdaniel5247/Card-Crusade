@@ -29,19 +29,6 @@ public class Blackjack_Controller : MonoBehaviour
         blackjack_Dealer.dealSecondCard();
     }
 
-    private IEnumerator playTurns()
-    {
-        List<List<int>> playerHandValues = new List<List<int>>();
-
-        for (int i = 0; i < players.Count; ++i)
-        {
-            yield return players[i].GetComponent<Blackjack_Player>().playTurn((ret) => { playerHandValues.Add(ret); });
-        }
-
-        dealer.GetComponent<Blackjack_Dealer>().revealFirstCard();
-        //TODO: Finish dealer turn here
-    }
-
     private void endRound()
     {
         for (int i = 0; i < players.Count; ++i)
@@ -50,6 +37,40 @@ public class Blackjack_Controller : MonoBehaviour
         }
 
         dealer.GetComponent<Blackjack_Dealer>().destroyHand();
+    }
+
+    private void evaluateHands(int dealerHandValue, List<List<int>> playerHandValues)
+    {
+        if (players.Count != playerHandValues.Count)
+        {
+            Debug.LogError("CONTROLLER: players.Count != playerHandValues.Count");
+            return;
+        }
+
+        for (int i = 0; i < players.Count; ++i)
+        {
+            for (int j = 0; j < playerHandValues[i].Count; ++j)
+            {
+                if (playerHandValues[i][j] > 21)
+                {
+                    Debug.Log("Player " + i + " lost on hand " + j);
+                    continue;
+                }
+
+                if (dealerHandValue > 21 || playerHandValues[i][j] > dealerHandValue)
+                {
+                    Debug.Log("Player " + i + " won on hand " + j);
+                }
+                else if (playerHandValues[i][j] < dealerHandValue)
+                {
+                    Debug.Log("Player " + i + " lost on hand " + j);
+                }
+                else //playerHandValues[i][j] == dealerHandValue
+                {
+                    Debug.Log("Player " + i + " pushed on hand " + j);
+                }
+            }
+        }
     }
 
     private IEnumerator gameLoop()
@@ -62,10 +83,23 @@ public class Blackjack_Controller : MonoBehaviour
             
             dealCards();
 
-            yield return playTurns();
-            yield return new WaitForSeconds(2f); //Need to see results
+            //Play turns
 
-            //TODO: Evaluate hands against dealer
+            List<List<int>> playerHandValues = new List<List<int>>();
+
+            for (int i = 0; i < players.Count; ++i)
+            {
+                yield return players[i].GetComponent<Blackjack_Player>().playTurn((ret) => { playerHandValues.Add(ret); });
+            }
+
+            blackjack_Dealer.revealFirstCard();
+            int dealerHandValue = blackjack_Dealer.playTurn();
+
+            yield return new WaitForSeconds(10f); //Need to see results
+
+            //Turns over
+
+            evaluateHands(dealerHandValue, playerHandValues);
 
             endRound();
         }
