@@ -54,8 +54,12 @@ public class Blackjack_Controller : MonoBehaviour
 
     private IEnumerator gameLoop()
     {
+        Blackjack_Dealer blackjack_Dealer = dealer.GetComponent<Blackjack_Dealer>();
+
         while (continueGame)
         {
+            blackjack_Dealer.shuffleDeck();
+            
             dealCards();
 
             yield return playTurns();

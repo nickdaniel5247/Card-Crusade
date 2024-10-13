@@ -18,7 +18,7 @@ public class Deck : MonoBehaviour
     [Header("BLACKJACK: ace should have value 1")] 
     public Card[] deck = new Card[deckSize];
 
-    void shuffle()
+    private void shuffle()
     {
         for (int i = 0; i < deckSize; ++i)
         {
@@ -41,8 +41,6 @@ public class Deck : MonoBehaviour
                 return;
             }
         }
-
-        shuffle();
     }
 
     public void resetAndShuffle()

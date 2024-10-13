@@ -21,6 +21,12 @@ public class Blackjack_Dealer : Participant
         }
     }
 
+    //Comfort function allowing Controller to easily shuffle
+    public void shuffleDeck()
+    {
+        deck.resetAndShuffle();
+    }
+
     //Deals first card face-down by creating inital hand; no-op if first card has been dealt already
     public void dealFirstCard()
     {
