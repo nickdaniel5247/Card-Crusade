@@ -84,9 +84,9 @@ public class Blackjack_Dealer : Participant
      *
      * Returns final hand value
      */
-    public List<int> playTurn()
+    public int playTurn()
     {
         Debug.LogError("BLACKJACK_DEALER: playTurn is not implemented.");
-        return null;
+        return 0;
     }
 }
