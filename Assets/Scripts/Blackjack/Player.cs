@@ -105,7 +105,7 @@ public class Blackjack_Player : Participant
 
             while (!endHandTurn && hand.getHandValue() < 21)
             {
-                yield return new WaitUntil(() => playerChoice != Action.None);
+                yield return null;
 
                 switch (playerChoice)
                 {

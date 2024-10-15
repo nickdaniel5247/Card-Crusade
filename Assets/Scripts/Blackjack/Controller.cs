@@ -7,7 +7,7 @@ public class Blackjack_Controller : MonoBehaviour
     //Editor chosen list of participants, for now
     public List<GameObject> players = new List<GameObject>();
     public GameObject dealer;
-
+    public Blackjack_Player.Action playerChoice = Blackjack_Player.Action.None;
     public bool continueGame = true;
 
     private void dealCards()
@@ -89,7 +89,15 @@ public class Blackjack_Controller : MonoBehaviour
 
             for (int i = 0; i < players.Count; ++i)
             {
-                yield return players[i].GetComponent<Blackjack_Player>().playTurn((ret) => { playerHandValues.Add(ret); });
+                Blackjack_Player player = players[i].GetComponent<Blackjack_Player>();
+                IEnumerator playTurn = player.playTurn((ret) => { playerHandValues.Add(ret); });
+
+                while (playTurn.MoveNext())
+                {
+                    playerChoice = Blackjack_Player.Action.None;
+                    yield return new WaitUntil(() => playerChoice != Blackjack_Player.Action.None);
+                    player.playerChoice = playerChoice;
+                }
             }
 
             blackjack_Dealer.revealFirstCard();
