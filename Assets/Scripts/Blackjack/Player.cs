@@ -6,6 +6,7 @@ using UnityEngine;
 public class Blackjack_Player : Participant
 {
     public float handDist = 1f;
+    public int maxSplits = 3;
 
     public enum Action
     {
@@ -17,6 +18,19 @@ public class Blackjack_Player : Participant
     };
 
     public Action playerChoice = Action.None;
+
+    private UI_Controller ui_Controller;
+
+    void Awake()
+    {
+        ui_Controller = GameObject.Find("Canvas").GetComponent<UI_Controller>();
+
+        if (!ui_Controller)
+        {
+            Debug.LogError("BLACKJACK_PLAYER: Cannot find Canvas GameObject w/ UI_Controller script.");
+            return;
+        }
+    }
 
     //Split hand at provided index, no sanity checking performed
     private void splitHand(int idx)
@@ -44,6 +58,7 @@ public class Blackjack_Player : Participant
         }
 
         createHand(idx + 1, (idx + 1) * handDist - furthestHandDist, card);
+        hands[idx + 1].GetComponent<Blackjack_Hand>().hit();
     }
 
     //Deals first card by creating inital hand; no-op if first card has been dealt already
@@ -86,6 +101,24 @@ public class Blackjack_Player : Participant
         hands.Clear();
     }
 
+    private bool canDouble(Blackjack_Hand hand)
+    {
+        return hand.getCardObjects().Count == 2;
+    }
+
+    private bool canSplit(Blackjack_Hand hand)
+    {
+        List<GameObject> cardObjects = hand.getCardObjects();
+
+        if (cardObjects.Count != 2 || cardObjects[0].GetComponent<CardData>().value != cardObjects[1].GetComponent<CardData>().value
+            || hands.Count >= (maxSplits + 1))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     /*
      * Play hand using playerChoice values; will wait for changes to playerChoice to continue
      *
@@ -105,7 +138,7 @@ public class Blackjack_Player : Participant
 
             while (!endHandTurn && hand.getHandValue() < 21)
             {
-                //TODO: Signify to UI_Controller if double/split is allowed
+                ui_Controller.setButtons(true, canDouble(hand), canSplit(hand), true);
                 yield return null;
 
                 switch (playerChoice)
