@@ -95,6 +95,7 @@ public class Blackjack_Controller : MonoBehaviour
                 while (playTurn.MoveNext())
                 {
                     playerChoice = Blackjack_Player.Action.None;
+                    //TODO: Signify to UI_Controller to allow button interactions
                     yield return new WaitUntil(() => playerChoice != Blackjack_Player.Action.None);
                     player.playerChoice = playerChoice;
                 }

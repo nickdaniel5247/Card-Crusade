@@ -105,6 +105,7 @@ public class Blackjack_Player : Participant
 
             while (!endHandTurn && hand.getHandValue() < 21)
             {
+                //TODO: Signify to UI_Controller if double/split is allowed
                 yield return null;
 
                 switch (playerChoice)
