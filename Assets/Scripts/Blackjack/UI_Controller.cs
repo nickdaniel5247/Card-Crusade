@@ -28,41 +28,38 @@ public class UI_Controller : MonoBehaviour
             return;
         }
 
-        hitButton.interactable = true;
-        doubleDownButton.interactable = false;
-        splitButton.interactable = false;
-        standButton.interactable = true;
+        setButtons(true, false, false, true);
     }
 
-    public void disableButtons()
+    public void setButtons(bool hit, bool doubleDown, bool split, bool stand)
     {
-        hitButton.interactable = false;
-        doubleDownButton.interactable = false;
-        splitButton.interactable = false;
-        standButton.interactable = false;
+        hitButton.interactable = hit;
+        doubleDownButton.interactable = doubleDown;
+        splitButton.interactable = split;
+        standButton.interactable = stand;
     }
 
     public void hit()
     {
         controller.playerChoice = Blackjack_Player.Action.Hit;
-        disableButtons();
+        setButtons(false, false, false, false);
     }
 
     public void doubleDown()
     {
         controller.playerChoice = Blackjack_Player.Action.Double;
-        disableButtons();
+        setButtons(false, false, false, false);
     }
 
     public void split()
     {
         controller.playerChoice = Blackjack_Player.Action.Split;
-        disableButtons();
+        setButtons(false, false, false, false);
     }
 
     public void stand()
     {
         controller.playerChoice = Blackjack_Player.Action.Stand;
-        disableButtons();
+        setButtons(false, false, false, false);
     }
 }
