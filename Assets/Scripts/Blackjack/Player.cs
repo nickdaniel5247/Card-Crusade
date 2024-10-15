@@ -134,6 +134,13 @@ public class Blackjack_Player : Participant
         for (int i = hands.Count - 1; i >= 0; --i)
         {
             Blackjack_Hand hand = hands[i].GetComponent<Blackjack_Hand>();
+
+            //Hand requires hit to start, came from a split
+            if (hand.getCardObjects().Count == 1)
+            {
+                hand.hit();
+            }
+
             bool endHandTurn = false;
 
             while (!endHandTurn && hand.getHandValue() < 21)
