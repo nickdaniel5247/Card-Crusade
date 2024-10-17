@@ -120,7 +120,7 @@ public class Blackjack_Player : Participant
     }
 
     /*
-     * Play hand using playerChoice values; will wait for changes to playerChoice to continue
+     * Play hand using playerChoice values; expects caller to iterate this function
      *
      * playerChoice will be reset to Action.None each time it is processed
      * Expects caller to continually assign playerChoice until this function ends
