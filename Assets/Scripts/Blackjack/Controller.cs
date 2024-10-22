@@ -10,6 +10,43 @@ public class Blackjack_Controller : MonoBehaviour
     public Blackjack_Player.Action playerChoice = Blackjack_Player.Action.None;
     public bool continueGame = true;
 
+    public void droppedChip(GameObject chip, Collider2D collider, int value)
+    {
+        foreach (GameObject player in players)
+        {
+            foreach (Transform transform in player.transform)
+            {
+                if (transform.name != "Bets")
+                {
+                    continue;
+                }
+
+                if (!transform.GetComponent<Collider2D>().IsTouching(collider))
+                {
+                    continue;
+                }
+
+                //We are in a slot
+                
+                player.GetComponent<Blackjack_Player>().initalBet += value;
+
+                if (transform.childCount == 0)
+                {
+                    chip.transform.SetParent(transform);
+                    chip.transform.localPosition = new Vector3();
+                    chip.GetComponent<Chip>().enabled = false;
+                    chips.Add(chip);
+                    return;
+                }
+
+                break;
+            }
+        }
+
+        //Didn't find slot for bets
+        Destroy(chip);
+    }
+
     private void dealCards()
     {
         Blackjack_Dealer blackjack_Dealer = dealer.GetComponent<Blackjack_Dealer>();

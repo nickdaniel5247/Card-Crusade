@@ -7,6 +7,7 @@ public class Blackjack_Player : Participant
 {
     public float handDist = 1f;
     public int maxSplits = 3;
+    public int initalBet = 0;
 
     public enum Action
     {

@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Chip : MonoBehaviour
+public abstract class Chip : MonoBehaviour
 {
-    private Camera main;
+    protected Camera main;
     public float speed = 20f;
 
-    void Awake()
+    public virtual void Awake()
     {
         main = Camera.main;
     }
@@ -24,6 +24,8 @@ public class Chip : MonoBehaviour
     {
         transform.position = Vector3.Lerp(transform.position, getMousePos(), speed * Time.deltaTime);
     }
+
+    public abstract void OnMouseUp();
 
     Vector3 getMousePos()
     {
