@@ -10,6 +10,14 @@ public class Blackjack_Controller : MonoBehaviour
     public Blackjack_Player.Action playerChoice = Blackjack_Player.Action.None;
     public bool continueGame = true;
 
+    private List<GameObject> chips = new List<GameObject>();
+    private Blackjack_Dealer blackjack_Dealer;
+
+    void Awake()
+    {
+        blackjack_Dealer = dealer.GetComponent<Blackjack_Dealer>();
+    }
+
     public void droppedChip(GameObject chip, Collider2D collider, int value)
     {
         foreach (GameObject player in players)
@@ -74,6 +82,13 @@ public class Blackjack_Controller : MonoBehaviour
         }
 
         dealer.GetComponent<Blackjack_Dealer>().destroyHand();
+
+        for (int i = 0; i < chips.Count; ++i)
+        {
+            Destroy(chips[i]);
+        }
+        
+        chips.Clear();
     }
 
     private void evaluateHands(int dealerHandValue, List<List<int>> playerHandValues)
@@ -110,48 +125,41 @@ public class Blackjack_Controller : MonoBehaviour
         }
     }
 
-    private IEnumerator gameLoop()
+    //Plays a round of Blacjack; expects bets to be set once called
+    public IEnumerator playRound(System.Action retCallback)
     {
-        Blackjack_Dealer blackjack_Dealer = dealer.GetComponent<Blackjack_Dealer>();
+        blackjack_Dealer.shuffleDeck();
+        
+        dealCards();
 
-        while (continueGame)
+        //Play turns
+
+        List<List<int>> playerHandValues = new List<List<int>>();
+
+        for (int i = 0; i < players.Count; ++i)
         {
-            blackjack_Dealer.shuffleDeck();
-            
-            dealCards();
+            Blackjack_Player player = players[i].GetComponent<Blackjack_Player>();
+            IEnumerator playTurn = player.playTurn((ret) => { playerHandValues.Add(ret); });
 
-            //Play turns
-
-            List<List<int>> playerHandValues = new List<List<int>>();
-
-            for (int i = 0; i < players.Count; ++i)
+            while (playTurn.MoveNext())
             {
-                Blackjack_Player player = players[i].GetComponent<Blackjack_Player>();
-                IEnumerator playTurn = player.playTurn((ret) => { playerHandValues.Add(ret); });
-
-                while (playTurn.MoveNext())
-                {
-                    playerChoice = Blackjack_Player.Action.None;
-                    yield return new WaitUntil(() => playerChoice != Blackjack_Player.Action.None);
-                    player.playerChoice = playerChoice;
-                }
+                playerChoice = Blackjack_Player.Action.None;
+                yield return new WaitUntil(() => playerChoice != Blackjack_Player.Action.None);
+                player.playerChoice = playerChoice;
             }
-
-            blackjack_Dealer.revealFirstCard();
-            int dealerHandValue = blackjack_Dealer.playTurn();
-
-            yield return new WaitForSeconds(10f); //Need to see results
-
-            //Turns over
-
-            evaluateHands(dealerHandValue, playerHandValues);
-
-            endRound();
         }
-    }
 
-    void Start()
-    {
-        StartCoroutine(gameLoop());
+        blackjack_Dealer.revealFirstCard();
+        int dealerHandValue = blackjack_Dealer.playTurn();
+
+        yield return new WaitForSeconds(10f); //Need to see results
+
+        //Turns over
+
+        evaluateHands(dealerHandValue, playerHandValues);
+
+        endRound();
+
+        retCallback();
     }
 }

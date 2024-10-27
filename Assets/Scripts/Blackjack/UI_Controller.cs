@@ -1,15 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UI_Controller : MonoBehaviour
 {
     private Blackjack_Controller controller;
+
     public Button hitButton;
     public Button doubleDownButton;
     public Button splitButton;
     public Button standButton;
+    public GameObject start;
 
     void Awake()
     {
@@ -22,12 +25,13 @@ public class UI_Controller : MonoBehaviour
         }
 
         //Probably should switch to automatically finding them
-        if (!hitButton || !splitButton || !doubleDownButton || !standButton)
+        if (!hitButton || !splitButton || !doubleDownButton || !standButton || !start)
         {
             Debug.LogError("UI_CONTROLLER: Button(s) not set.");
             return;
         }
 
+        start.SetActive(true);
         setButtons(true, false, false, true);
     }
 
@@ -61,5 +65,24 @@ public class UI_Controller : MonoBehaviour
     {
         controller.playerChoice = Blackjack_Player.Action.Stand;
         setButtons(false, false, false, false);
+    }
+
+    private void setGameObjects(bool value)
+    {
+        start.SetActive(value);
+
+        GameObject bank = GameObject.Find("Bank");
+
+        if (!bank)
+        {
+            Debug.LogError("UI_CONTROLLER: Cannot find Bank GameObject.");
+            return;
+        }
+    }
+
+    public void startRound()
+    {
+        setGameObjects(false);
+        StartCoroutine(controller.playRound(() => { setGameObjects(true); }));
     }
 }
