@@ -13,7 +13,7 @@ public class Money : MonoBehaviour
     {
         ui_Text = this.GetComponent<TextMeshProUGUI>();
 
-        //if (!PlayerPrefs.HasKey("Balance"))
+        if (!PlayerPrefs.HasKey("Balance"))
         {
             PlayerPrefs.SetFloat("Balance", balance);
         }
