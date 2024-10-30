@@ -126,7 +126,8 @@ public class Blackjack_Player : Participant
      * playerChoice will be reset to Action.None each time it is processed
      * Expects caller to continually assign playerChoice until this function ends
      *
-     * Returns final hand values through the retCallback paramter
+     * Returns final hand values and bet value for each hand, in that respective order, 
+     * through the retCallback paramter
      */
     public IEnumerator playTurn(System.Action<List<(int,int)>> retCallback)
     {

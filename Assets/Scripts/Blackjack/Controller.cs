@@ -8,6 +8,7 @@ public class Blackjack_Controller : MonoBehaviour
     public List<GameObject> players = new List<GameObject>();
     public GameObject dealer;
     public Blackjack_Player.Action playerChoice = Blackjack_Player.Action.None;
+    public float endRoundTime = 5f;
 
     private List<GameObject> chips = new List<GameObject>();
     private Blackjack_Dealer blackjack_Dealer;
@@ -107,8 +108,12 @@ public class Blackjack_Controller : MonoBehaviour
         chips.Clear();
     }
 
+    //Evaluate hands against dealer and payout accordingly
     private void evaluateHands(int dealerHandValue, List<List<(int,int)>> playerHandValues)
     {
+        //playerHandValues item1 is hand value
+        //playerHandValues item2 is amount bet for that hand
+
         if (players.Count != playerHandValues.Count)
         {
             Debug.LogError("CONTROLLER: players.Count != playerHandValues.Count");
@@ -168,8 +173,11 @@ public class Blackjack_Controller : MonoBehaviour
         {
             Blackjack_Player player = players[i].GetComponent<Blackjack_Player>();
 
+            //Don't play turns of those who didn't bet
             if (player.initalBet == 0)
             {
+                //Add empty list to allow later functions to work easy
+                //This keeps players.Count == playerHandValues.Count
                 playerHandValues.Add(new List<(int,int)>());
                 continue;
             }
@@ -178,6 +186,7 @@ public class Blackjack_Controller : MonoBehaviour
 
             while (playTurn.MoveNext())
             {
+                //Wait for our playerChoice to change and then propogate changes down to Player
                 playerChoice = Blackjack_Player.Action.None;
                 yield return new WaitUntil(() => playerChoice != Blackjack_Player.Action.None);
                 player.playerChoice = playerChoice;
@@ -187,9 +196,10 @@ public class Blackjack_Controller : MonoBehaviour
         blackjack_Dealer.revealFirstCard();
         int dealerHandValue = blackjack_Dealer.playTurn();
 
-        yield return new WaitForSeconds(10f); //Need to see results
+        //Need to see results
+        yield return new WaitForSeconds(endRoundTime);
 
-        //Turns over
+        //Playing is over
 
         evaluateHands(dealerHandValue, playerHandValues);
 
