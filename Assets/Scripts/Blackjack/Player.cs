@@ -104,7 +104,7 @@ public class Blackjack_Player : Participant
 
     private bool canDouble(Blackjack_Hand hand)
     {
-        return hand.getCardObjects().Count == 2;
+        return (hand.getCardObjects().Count == 2) && (Money.balance >= initalBet);
     }
 
     private bool canSplit(Blackjack_Hand hand)
@@ -112,7 +112,7 @@ public class Blackjack_Player : Participant
         List<GameObject> cardObjects = hand.getCardObjects();
 
         if (cardObjects.Count != 2 || cardObjects[0].GetComponent<CardData>().value != cardObjects[1].GetComponent<CardData>().value
-            || hands.Count >= (maxSplits + 1))
+            || hands.Count >= (maxSplits + 1) || Money.balance < initalBet)
         {
             return false;
         }
@@ -128,9 +128,9 @@ public class Blackjack_Player : Participant
      *
      * Returns final hand values through the retCallback paramter
      */
-    public IEnumerator playTurn(System.Action<List<int>> retCallback)
+    public IEnumerator playTurn(System.Action<List<(int,int)>> retCallback)
     {
-        List<int> handValues = new List<int>();
+        List<(int,int)> handValues = new List<(int,int)>();
 
         for (int i = hands.Count - 1; i >= 0; --i)
         {
@@ -143,6 +143,7 @@ public class Blackjack_Player : Participant
             }
 
             bool endHandTurn = false;
+            int betValue = initalBet;
 
             while (!endHandTurn && hand.getHandValue() < 21)
             {
@@ -159,10 +160,13 @@ public class Blackjack_Player : Participant
                     break;
                 case Action.Double:
                     hand.doubleDown();
+                    Money.balance -= betValue;
+                    betValue *= 2;
                     endHandTurn = true;
                     break;
                 case Action.Split:
                     splitHand(i);
+                    Money.balance -= initalBet;
                     ++i; //New hand becomes one to the right
                     hand = hands[i].GetComponent<Blackjack_Hand>(); //Switch to new hand now
                     break;
@@ -171,7 +175,7 @@ public class Blackjack_Player : Participant
                 playerChoice = Action.None;
             }
 
-            handValues.Add(hand.getHandValue());
+            handValues.Add((hand.getHandValue(), betValue));
         }
 
         retCallback(handValues);

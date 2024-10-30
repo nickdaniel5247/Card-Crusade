@@ -8,7 +8,6 @@ public class Blackjack_Controller : MonoBehaviour
     public List<GameObject> players = new List<GameObject>();
     public GameObject dealer;
     public Blackjack_Player.Action playerChoice = Blackjack_Player.Action.None;
-    public bool continueGame = true;
 
     private List<GameObject> chips = new List<GameObject>();
     private Blackjack_Dealer blackjack_Dealer;
@@ -20,6 +19,12 @@ public class Blackjack_Controller : MonoBehaviour
 
     public void droppedChip(GameObject chip, Collider2D collider, int value)
     {
+        if (Money.balance < value)
+        {
+            Destroy(chip);
+            return;
+        }
+
         foreach (GameObject player in players)
         {
             foreach (Transform transform in player.transform)
@@ -35,8 +40,9 @@ public class Blackjack_Controller : MonoBehaviour
                 }
 
                 //We are in a slot
-                
+
                 player.GetComponent<Blackjack_Player>().initalBet += value;
+                Money.balance -= value;
 
                 if (transform.childCount == 0)
                 {
@@ -61,14 +67,24 @@ public class Blackjack_Controller : MonoBehaviour
 
         for (int i = 0; i < players.Count; ++i)
         {
-            players[i].GetComponent<Blackjack_Player>().dealFirstCard();
+            Blackjack_Player blackjack_Player = players[i].GetComponent<Blackjack_Player>();
+
+            if (blackjack_Player.initalBet != 0)
+            {
+                blackjack_Player.dealFirstCard();
+            }
         }
 
         blackjack_Dealer.dealFirstCard();
 
         for (int i = 0; i < players.Count; ++i)
         {
-            players[i].GetComponent<Blackjack_Player>().dealSecondCard();
+            Blackjack_Player blackjack_Player = players[i].GetComponent<Blackjack_Player>();
+
+            if (blackjack_Player.initalBet != 0)
+            {
+                blackjack_Player.dealSecondCard();
+            }
         }
 
         blackjack_Dealer.dealSecondCard();
@@ -91,7 +107,7 @@ public class Blackjack_Controller : MonoBehaviour
         chips.Clear();
     }
 
-    private void evaluateHands(int dealerHandValue, List<List<int>> playerHandValues)
+    private void evaluateHands(int dealerHandValue, List<List<(int,int)>> playerHandValues)
     {
         if (players.Count != playerHandValues.Count)
         {
@@ -99,27 +115,32 @@ public class Blackjack_Controller : MonoBehaviour
             return;
         }
 
+        //Payout any wins here
         for (int i = 0; i < players.Count; ++i)
         {
             for (int j = 0; j < playerHandValues[i].Count; ++j)
             {
-                if (playerHandValues[i][j] > 21)
+                //Player busted, no return needed
+                if (playerHandValues[i][j].Item1 > 21)
                 {
-                    Debug.Log("Player " + i + " lost on hand " + j);
                     continue;
                 }
 
-                if (dealerHandValue > 21 || playerHandValues[i][j] > dealerHandValue)
+                //At this point if either dealer busted or player is higher they win
+                if (dealerHandValue > 21 || playerHandValues[i][j].Item1 > dealerHandValue)
                 {
-                    Debug.Log("Player " + i + " won on hand " + j);
+                    //Payouts for blackjack are 3/2 not double
+                    if (playerHandValues[i][j].Item1 == 21)
+                    {
+                        Money.balance += playerHandValues[i][j].Item2 * 3/2;
+                    }
+                    else
+                        Money.balance += playerHandValues[i][j].Item2 * 2;
                 }
-                else if (playerHandValues[i][j] < dealerHandValue)
+                else if (playerHandValues[i][j].Item1 == dealerHandValue)
                 {
-                    Debug.Log("Player " + i + " lost on hand " + j);
-                }
-                else //playerHandValues[i][j] == dealerHandValue
-                {
-                    Debug.Log("Player " + i + " pushed on hand " + j);
+                    //Push gets player exact bet back
+                    Money.balance += playerHandValues[i][j].Item2;
                 }
             }
         }
@@ -128,17 +149,31 @@ public class Blackjack_Controller : MonoBehaviour
     //Plays a round of Blacjack; expects bets to be set once called
     public IEnumerator playRound(System.Action retCallback)
     {
+        //No bets placed, don't play round
+        if (chips.Count == 0)
+        {
+            retCallback();
+            yield break;
+        }
+
         blackjack_Dealer.shuffleDeck();
         
         dealCards();
 
         //Play turns
 
-        List<List<int>> playerHandValues = new List<List<int>>();
+        List<List<(int, int)>> playerHandValues = new List<List<(int,int)>>();
 
         for (int i = 0; i < players.Count; ++i)
         {
             Blackjack_Player player = players[i].GetComponent<Blackjack_Player>();
+
+            if (player.initalBet == 0)
+            {
+                playerHandValues.Add(new List<(int,int)>());
+                continue;
+            }
+
             IEnumerator playTurn = player.playTurn((ret) => { playerHandValues.Add(ret); });
 
             while (playTurn.MoveNext())
