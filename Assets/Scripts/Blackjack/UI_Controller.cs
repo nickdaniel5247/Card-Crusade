@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class UI_Controller : MonoBehaviour
 {
     private Blackjack_Controller controller;
+    private GameObject bank;
 
     public Button hitButton;
     public Button doubleDownButton;
@@ -21,6 +22,14 @@ public class UI_Controller : MonoBehaviour
         if (!controller)
         {
             Debug.LogError("UI_CONTROLLER: Cannot find Controller GameObject w/ Blackjack_Controller script.");
+            return;
+        }
+        
+        bank = GameObject.Find("Bank");
+
+        if (!bank)
+        {
+            Debug.LogError("UI_CONTROLLER: Cannot find Bank GameObject.");
             return;
         }
 
@@ -71,13 +80,18 @@ public class UI_Controller : MonoBehaviour
     {
         start.SetActive(value);
 
-        GameObject bank = GameObject.Find("Bank");
-
-        if (!bank)
+        if (value == false)
         {
-            Debug.LogError("UI_CONTROLLER: Cannot find Bank GameObject.");
-            return;
+            bank = GameObject.Find("Bank");
+
+            if (!bank)
+            {
+                Debug.LogError("UI_CONTROLLER: Cannot find Bank GameObject.");
+                return;
+            }
         }
+
+        bank.SetActive(value);
     }
 
     public void startRound()
