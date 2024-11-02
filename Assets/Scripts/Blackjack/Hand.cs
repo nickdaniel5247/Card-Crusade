@@ -19,7 +19,7 @@ public class Blackjack_Hand : Hand
             GameObject givenCard = (GameObject)handInitParams[0];
 
             givenCard.transform.SetParent(this.transform);
-            givenCard.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            givenCard.transform.localScale = cardScale;
             givenCard.transform.localPosition = new Vector3(-0.25f, 0f, 0f);
             cardObjects.Add(givenCard);
 
@@ -31,7 +31,7 @@ public class Blackjack_Hand : Hand
 
         var gameObject = new GameObject("Card");
         gameObject.transform.SetParent(this.transform);
-        gameObject.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        gameObject.transform.localScale = cardScale;
         gameObject.transform.localPosition = new Vector3(-0.25f, 0f, 0f);
 
         var spriteRenderer = gameObject.AddComponent<SpriteRenderer>();

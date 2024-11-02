@@ -6,6 +6,7 @@ public abstract class Hand : MonoBehaviour
 {
     protected List<GameObject> cardObjects = new List<GameObject>();
     protected Deck deck;
+    protected Vector3 cardScale = new Vector3(0.75f, 0.75f, 0.75f);
 
     void Awake()
     {
@@ -25,11 +26,12 @@ public abstract class Hand : MonoBehaviour
     {
         var gameObject = new GameObject("Card");
         gameObject.transform.SetParent(this.transform);
-        gameObject.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        gameObject.transform.localScale = cardScale;
         gameObject.transform.localPosition = cardObjects.Last().transform.localPosition + new Vector3(0.25f, 0.25f, 0f);
 
         if (rotate)
         {
+            gameObject.transform.localPosition += new Vector3(0.25f, 0.25f, 0f);
             gameObject.transform.Rotate(0f, 0f, 90f);
         }
 
