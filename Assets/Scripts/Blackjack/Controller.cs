@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Blackjack_Controller : MonoBehaviour
 {
-    //Editor chosen list of participants, for now
+    //Editor chosen list of participants (should be used as slots)
     public List<GameObject> players = new List<GameObject>();
     public GameObject dealer;
     public Blackjack_Player.Action playerChoice = Blackjack_Player.Action.None;
