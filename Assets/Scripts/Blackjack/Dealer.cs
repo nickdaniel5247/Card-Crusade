@@ -7,6 +7,8 @@ public class Blackjack_Dealer : Participant
 {
     //Editor assigned prefab
     public GameObject faceDownCard;
+    public Vector3 cardSpawnOffset = new Vector3(1f, 0f, 0f);
+
     private Sprite firstCard;
     private Deck deck;
 
@@ -41,7 +43,7 @@ public class Blackjack_Dealer : Participant
         GameObject cardObject = Instantiate(faceDownCard);
         cardObject.GetComponent<CardData>().value = card.value;
 
-        createHand(0, 0f, cardObject);
+        createHand(0, 0f, cardObject, cardSpawnOffset);
     }
 
     //Deals second card; expects starting conditions created from calling dealFirstCard otherwise it's no-op
@@ -97,6 +99,7 @@ public class Blackjack_Dealer : Participant
         while (hand.getHandValue(false) < 17)
         {
             hand.hit();
+            hand.transform.localPosition -= cardSpawnOffset/2;
         }
 
         return hand.getHandValue(false);
