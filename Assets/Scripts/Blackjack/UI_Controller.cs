@@ -24,7 +24,7 @@ public class UI_Controller : MonoBehaviour
             Debug.LogError("UI_CONTROLLER: Cannot find Controller GameObject w/ Blackjack_Controller script.");
             return;
         }
-        
+
         bank = GameObject.Find("Bank");
 
         if (!bank)
@@ -41,7 +41,7 @@ public class UI_Controller : MonoBehaviour
         }
 
         start.SetActive(true);
-        setButtons(true, false, false, true);
+        setButtons(false, false, false, false);
     }
 
     public void setButtons(bool hit, bool doubleDown, bool split, bool stand)
