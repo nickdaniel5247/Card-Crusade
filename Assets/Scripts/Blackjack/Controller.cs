@@ -208,7 +208,10 @@ public class Blackjack_Controller : MonoBehaviour
         }
 
         blackjack_Dealer.revealFirstCard();
-        int dealerHandValue = blackjack_Dealer.playTurn();
+        yield return new WaitForSeconds(blackjack_Dealer.hitWait);
+
+        int dealerHandValue = 0;
+        yield return blackjack_Dealer.playTurn((ret) => { dealerHandValue = ret; });
 
         //Need to see results
         yield return new WaitForSeconds(endRoundTime);

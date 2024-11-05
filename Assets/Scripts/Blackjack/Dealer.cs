@@ -8,6 +8,7 @@ public class Blackjack_Dealer : Participant
     //Editor assigned prefab
     public GameObject faceDownCard;
     public Vector3 cardSpawnOffset = new Vector3(1f, 0f, 0f);
+    public float hitWait = 1f;
 
     private Sprite firstCard;
     private Deck deck;
@@ -92,7 +93,7 @@ public class Blackjack_Dealer : Participant
      *
      * Returns final hand value
      */
-    public int playTurn()
+    public IEnumerator playTurn(System.Action<int> retCallback)
     {
         Blackjack_Hand hand = hands.First().GetComponent<Blackjack_Hand>();
 
@@ -100,8 +101,9 @@ public class Blackjack_Dealer : Participant
         {
             hand.hit();
             hand.transform.localPosition -= cardSpawnOffset/2;
+            yield return new WaitForSeconds(hitWait);
         }
 
-        return hand.getHandValue(false);
+        retCallback(hand.getHandValue(false));
     }
 }
