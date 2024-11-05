@@ -130,9 +130,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handVerticalOffset: 3
   Hand: {fileID: 11500000, guid: 656c0affedbc64e8c8bacbc3c2f31c3b, type: 3}
-  handDist: 1
+  handDist: 1.25
   maxSplits: 3
   initalBet: 0
+  cardSpawnOffset: {x: 0.25, y: 0.25, z: 0}
   playerChoice: 0
 --- !u!1 &8848439367711121005
 GameObject:

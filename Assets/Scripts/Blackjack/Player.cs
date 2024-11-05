@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class Blackjack_Player : Participant
 {
-    public float handDist = 1f;
+    public float handDist = 1.5f;
     public int maxSplits = 3;
     public int initalBet = 0;
+    public Vector3 cardSpawnOffset = new Vector3(0.25f, 0.25f, 0f);
+    public Vector3 cardSpawnPos = new Vector3(-0.25f, 0f, 0f);
 
     public enum Action
     {
@@ -58,7 +60,7 @@ public class Blackjack_Player : Participant
             hands[i].transform.localPosition = new Vector3(xPos, handVerticalOffset, 0f);
         }
 
-        createHand(idx + 1, (idx + 1) * handDist - furthestHandDist, card);
+        createHand(idx + 1, (idx + 1) * handDist - furthestHandDist, card, cardSpawnOffset, cardSpawnPos);
         hands[idx + 1].GetComponent<Blackjack_Hand>().hit();
     }
 

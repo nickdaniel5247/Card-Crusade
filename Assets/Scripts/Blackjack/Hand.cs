@@ -8,10 +8,9 @@ public class Blackjack_Hand : Hand
     public override void init(params object[] handInitParams)
     {
         //Initialize first card in hand using supplied card GameObject
-        if (handInitParams.Count() == 2)
+        if (handInitParams.Count() == 3)
         {
-            //Count of 2 signifies Dealer calling init
-            //We expect the starting facedown card GameObject and cardSpawnOffset
+            //We expect the starting facedown card GameObject, cardSpawnOffset, starting spawn position
 
             if (handInitParams[0] is not GameObject)
             {
@@ -19,7 +18,7 @@ public class Blackjack_Hand : Hand
                 return;
             }
 
-            if (handInitParams[1] is not Vector3)
+            if (handInitParams[1] is not Vector3 || handInitParams[2] is not Vector3)
             {
                 Debug.LogError("BLACKJACK_HAND: Type different from Vector3 was provided to init in idx 1.");
                 return;
@@ -29,7 +28,9 @@ public class Blackjack_Hand : Hand
 
             givenCard.transform.SetParent(this.transform);
             givenCard.transform.localScale = cardScale;
-            givenCard.transform.localPosition = new Vector3(-0.5f, 0f, 0f);
+            givenCard.transform.localPosition = (Vector3)handInitParams[2];
+
+            givenCard.GetComponent<SpriteRenderer>().sortingOrder = 0;
             cardObjects.Add(givenCard);
 
             cardSpawnOffset = (Vector3)handInitParams[1];

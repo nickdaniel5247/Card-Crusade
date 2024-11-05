@@ -43,7 +43,7 @@ public class Blackjack_Dealer : Participant
         GameObject cardObject = Instantiate(faceDownCard);
         cardObject.GetComponent<CardData>().value = card.value;
 
-        createHand(0, 0f, cardObject, cardSpawnOffset);
+        createHand(0, 0f, cardObject, cardSpawnOffset, new Vector3());
     }
 
     //Deals second card; expects starting conditions created from calling dealFirstCard otherwise it's no-op
