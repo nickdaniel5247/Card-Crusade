@@ -10,12 +10,16 @@ public class Blackjack_Controller : MonoBehaviour
     public Blackjack_Player.Action playerChoice = Blackjack_Player.Action.None;
     public float endRoundTime = 5f;
 
+    public AudioClip loseSound;
+    private AudioSource audioSource;
+
     private List<GameObject> chips = new List<GameObject>();
     private Blackjack_Dealer blackjack_Dealer;
 
     void Awake()
     {
         blackjack_Dealer = dealer.GetComponent<Blackjack_Dealer>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void droppedChip(GameObject chip, Collider2D collider, int value)
@@ -120,6 +124,8 @@ public class Blackjack_Controller : MonoBehaviour
             return;
         }
 
+        bool onlyBusted = true;
+
         //Payout any wins here
         for (int i = 0; i < players.Count; ++i)
         {
@@ -130,6 +136,8 @@ public class Blackjack_Controller : MonoBehaviour
                 {
                     continue;
                 }
+
+                onlyBusted = false;
 
                 //At this point if either dealer busted or player is higher they win
                 if (dealerHandValue > 21 || playerHandValues[i][j].Item1 > dealerHandValue)
@@ -148,6 +156,12 @@ public class Blackjack_Controller : MonoBehaviour
                     Money.balance += playerHandValues[i][j].Item2;
                 }
             }
+        }
+
+        if (onlyBusted)
+        {
+            //Loser busted all their cards
+            audioSource.PlayOneShot(loseSound);
         }
     }
 

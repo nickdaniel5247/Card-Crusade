@@ -23,6 +23,8 @@ public class Blackjack_Player : Participant
     public Action playerChoice = Action.None;
 
     private UI_Controller ui_Controller;
+    private AudioSource audioSource;
+    public AudioClip cardSound;
 
     void Awake()
     {
@@ -33,6 +35,8 @@ public class Blackjack_Player : Participant
             Debug.LogError("BLACKJACK_PLAYER: Cannot find Canvas GameObject w/ UI_Controller script.");
             return;
         }
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     //Split hand at provided index, no sanity checking performed
@@ -176,6 +180,7 @@ public class Blackjack_Player : Participant
                 }
 
                 playerChoice = Action.None;
+                audioSource.PlayOneShot(cardSound);
             }
 
             handValues.Add((hand.getHandValue(), betValue));
