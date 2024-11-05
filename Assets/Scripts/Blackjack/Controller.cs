@@ -99,7 +99,9 @@ public class Blackjack_Controller : MonoBehaviour
     {
         for (int i = 0; i < players.Count; ++i)
         {
-            players[i].GetComponent<Blackjack_Player>().destroyHands();
+            Blackjack_Player blackjack_Player = players[i].GetComponent<Blackjack_Player>();
+            blackjack_Player.destroyHands();
+            blackjack_Player.initalBet = 0;
         }
 
         dealer.GetComponent<Blackjack_Dealer>().destroyHand();
