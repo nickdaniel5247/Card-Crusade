@@ -146,6 +146,7 @@ public class Blackjack_Player : Participant
             //Hand requires hit to start, came from a split
             if (hand.getCardObjects().Count == 1)
             {
+                audioSource.PlayOneShot(cardSound);
                 hand.hit();
             }
 
