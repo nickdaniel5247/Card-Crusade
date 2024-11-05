@@ -2136,6 +2136,8 @@ MonoBehaviour:
   Hand: {fileID: 11500000, guid: 656c0affedbc64e8c8bacbc3c2f31c3b, type: 3}
   faceDownCard: {fileID: 488143819659078895, guid: c5b8f58ff11b941c4b89810e30379972, type: 3}
   cardSpawnOffset: {x: 1, y: 0, z: 0}
+  hitWait: 1
+  cardSound: {fileID: 8300000, guid: 0cc0b952e1b7a4c8696710a265360ea5, type: 3}
 --- !u!1 &1478766484
 GameObject:
   m_ObjectHideFlags: 0

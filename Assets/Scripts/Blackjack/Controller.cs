@@ -207,6 +207,7 @@ public class Blackjack_Controller : MonoBehaviour
             }
         }
 
+        yield return new WaitForSeconds(blackjack_Dealer.hitWait);
         blackjack_Dealer.revealFirstCard();
         yield return new WaitForSeconds(blackjack_Dealer.hitWait);
 

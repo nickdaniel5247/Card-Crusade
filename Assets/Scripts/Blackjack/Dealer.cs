@@ -13,6 +13,9 @@ public class Blackjack_Dealer : Participant
     private Sprite firstCard;
     private Deck deck;
 
+    private AudioSource audioSource;
+    public AudioClip cardSound;
+
     void Awake()
     {
         deck = GameObject.Find("Deck").GetComponent<Deck>();
@@ -22,6 +25,8 @@ public class Blackjack_Dealer : Participant
             Debug.LogError("BLACKJACK_DEALER: Cannot find Deck GameObject w/ Deck script.");
             return;
         }
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     //Comfort function allowing Controller to easily shuffle
@@ -75,6 +80,7 @@ public class Blackjack_Dealer : Participant
         }
 
         cardObjects.First().GetComponent<SpriteRenderer>().sprite = firstCard;
+        audioSource.PlayOneShot(cardSound);
     }
 
     //Destroys hand
@@ -101,6 +107,7 @@ public class Blackjack_Dealer : Participant
         {
             hand.hit();
             hand.transform.localPosition -= cardSpawnOffset/2;
+            audioSource.PlayOneShot(cardSound);
             yield return new WaitForSeconds(hitWait);
         }
 
