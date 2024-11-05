@@ -49,7 +49,7 @@ public class Blackjack_Controller : MonoBehaviour
                 {
                     chip.transform.SetParent(transform);
                     chip.transform.localPosition = new Vector3();
-                    chip.GetComponent<Chip>().enabled = false;
+                    chip.GetComponent<Collider2D>().enabled = false;
                     chips.Add(chip);
                     return;
                 }
