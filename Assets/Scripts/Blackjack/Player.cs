@@ -179,8 +179,12 @@ public class Blackjack_Player : Participant
                     break;
                 }
 
+                if (playerChoice != Action.Stand)
+                {
+                    audioSource.PlayOneShot(cardSound);
+                }
+
                 playerChoice = Action.None;
-                audioSource.PlayOneShot(cardSound);
             }
 
             handValues.Add((hand.getHandValue(), betValue));
