@@ -8,7 +8,7 @@ public class Blackjack_Dealer : Participant
     //Editor assigned prefab
     public GameObject faceDownCard;
     public Vector3 cardSpawnOffset = new Vector3(1f, 0f, 0f);
-    public float hitWait = 1f;
+    public float hitWait = 1.75f;
 
     private Sprite firstCard;
     private Deck deck;
